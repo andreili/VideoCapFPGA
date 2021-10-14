@@ -54,14 +54,16 @@ module stream_cap
 
 	wire		[3:0]		w_R, w_G, w_B;
 
-	assign w_R = (w_mux_mode == 3'b000) ? i_R :
-					(w_mux_mode == 3'b001) ? { i_R[0], i_R[0] & i_I, i_R[0], i_R[0] } :
+	assign w_R = (w_mux_mode == 3'd0) ? i_R :
+					(w_mux_mode == 3'd1) ? { i_R[0], i_R[0] & i_I, i_R[0], i_R[0] } :
+					(w_mux_mode == 3'd2) ? 4'b0 :
 					i_R;
-	assign w_G = (w_mux_mode == 3'b000) ? i_G :
-					(w_mux_mode == 3'b001) ? { i_G[0], i_G[0] & i_I, i_G[0], i_G[0] } :
+	assign w_G = (w_mux_mode == 3'd0) ? i_G :
+					(w_mux_mode == 3'd2) ? { i_G[0], i_G[0] & i_I, i_G[0], i_G[0] } :
 					i_G;
-	assign w_B = (w_mux_mode == 3'b000) ? i_B :
-					(w_mux_mode == 3'b001) ? { i_B[0], i_B[0] & i_I, i_B[0], i_B[0] } :
+	assign w_B = (w_mux_mode == 3'd0) ? i_B :
+					(w_mux_mode == 3'd1) ? { i_B[0], i_B[0] & i_I, i_B[0], i_B[0] } :
+					(w_mux_mode == 3'd2) ? 4'b0 :
 					i_B;
 
 	reg[3:0]	r_R, r_G, r_B;
