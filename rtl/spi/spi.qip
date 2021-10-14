@@ -1,0 +1,3 @@
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "spi_core.v"]
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "spi_master.v"]
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "slave_mux.v"]

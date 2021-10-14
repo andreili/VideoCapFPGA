@@ -1,0 +1,5 @@
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "vctrl_regs.v"]
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "video.v"]
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "video_uni.v"]
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "vmem.v"]
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "sync_gen.v"]
