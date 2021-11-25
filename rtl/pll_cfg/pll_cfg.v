@@ -57,8 +57,8 @@ module pll_cfg
 			r_busy <= 1'b0;
 			r_pll_reset <= 1'b0;
 			r_update <= 1'b0;
-			r_data <= 0;
-			r_enable <= 0;
+			//r_data <= '0;
+			//r_enable <= '0;
 		end
 			else if ((r_busy == 1'b0) && (w_start_update == 1'b1))
 		begin

@@ -118,6 +118,8 @@ module video
 		.o_line_end		(w_v_line_end),
 		.o_is_active	(w_v_is_active)
 	);
+	
+	wire[8:0] w_line_idx;
 
 	video_uni u_uni
 	(
@@ -130,15 +132,26 @@ module video
 		.i_y				(w_y),
 		.i_line_end		(w_h_line_end),
 		.i_vdata			(w_vdata),
-		.o_line_idx		(o_line_idx),
+		.o_line_idx		(w_line_idx),
 		.o_column		(w_column),
 		.o_r				(o_r),
 		.o_g				(o_g),
 		.o_b				(o_b)
 	);
+	
+	reg[8:0] r_line_idx;
+	reg		r_line_end;
+	reg		r_frame_end;
+	always @(posedge i_clk_mem)
+	begin
+		r_line_idx <= w_line_idx;
+		r_line_end <= !w_h_is_active;
+		r_frame_end <= w_v_line_end;
+	end
 
-	assign o_line_end = !w_h_is_active;
-	assign o_frame_end = w_v_line_end;
+	assign o_line_idx = r_line_idx;
+	assign o_line_end = r_line_end;
+	assign o_frame_end = r_frame_end;
 	assign o_de = w_h_is_active & w_v_is_active;
 
 endmodule

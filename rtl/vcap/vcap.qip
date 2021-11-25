@@ -1,0 +1,2 @@
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "stream_cap.v"]
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "vcap_regs.v"]

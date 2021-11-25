@@ -70,6 +70,24 @@ module VideoCap
 		.o_reset_out_n		(w_reset_n)
 	);
 
+	/*wire w_reset_n_fast;
+
+	CDC_path u_CDC_reset_spi
+	(
+		.i_signal				(w_reset_n),
+		.i_clk1					(w_clk_low),
+		.i_clk2					(w_clk_spi),
+		.o_signal_reg_clk1	(),//(w_active_negedge_slow),
+		.o_signal				(w_reset_n_fast)
+	);*/
+	reg r_reset_n_spi;
+	always @(posedge w_clk_spi)
+		r_reset_n_spi <= w_reset_n;
+
+	reg r_reset_n_sdram;
+	always @(posedge w_clk_sdram)
+		r_reset_n_sdram <= w_reset_n;
+
 	wire[6:0]	w_addr;
 	wire[7:0]	w_data_wr, w_data_rd;
 	wire			w_wr_req;
@@ -80,7 +98,7 @@ module VideoCap
 	spi_master u_master
 	(
 		.i_clk			(w_clk_spi),
-		.i_reset_n		(w_reset_n),
+		.i_reset_n		(r_reset_n_spi),
 		.i_spi_cs_n		(SPI_CSn),
 		.i_spi_sck		(SPI_SCK),
 		.i_spi_si		(SPI_SI),
@@ -108,7 +126,7 @@ module VideoCap
 	pll_cfg u_pll_cfg
 	(
 		.i_clk			(w_clk_spi),
-		.i_reset_n		(w_reset_n),
+		.i_reset_n		(r_reset_n_spi),
 		.i_addr			(w_addr[4:0]),
 		.i_data_wr		(w_data_wr),
 		.i_select		(w_sel_pllctrl),
@@ -133,7 +151,7 @@ module VideoCap
 	(
 		.i_pxl_clk			(VI_CLK),
 		.i_ram_clk			(w_clk_sdram),
-		.i_reset_n			(w_reset_n),
+		.i_reset_n			(r_reset_n_sdram),
 		// internal bus
 		.i_clk_bus			(w_clk_spi),
 		.i_addr				(w_addr[4:0]),
@@ -168,7 +186,7 @@ module VideoCap
 	u_sdram
 	(
 		.i_clk			(w_clk_sdram),
-		.i_reset_n		(w_reset_n),
+		.i_reset_n		(r_reset_n_sdram),
 		.io_dq			(SDRAM_DQ),
 		.o_A				(SDRAM_A[11:0]),
 		.o_BS				(SDRAM_BS),
@@ -195,7 +213,7 @@ module VideoCap
 	(
 		.i_clk			(w_clk_vo),
 		.i_clk_mem		(w_clk_sdram),
-		.i_reset_n		(w_reset_n),
+		.i_reset_n		(r_reset_n_spi),
 		// internal bus
 		.i_clk_bus		(w_clk_spi),
 		.i_addr			(w_addr[4:0]),

@@ -115,13 +115,11 @@ module sdram_ctrl
 	//reg[7:0]						r_video_line;
 	reg							r_fifo_next;
 	reg							r_fifo_reset;
-	reg							r_fifo_nempty;
 
 	always @(posedge i_clk)
 	begin
 		r_line_end <= i_line_end;
 		r_line_end_prev <= r_line_end;
-		r_fifo_nempty <= i_fifo_nempty;
 	end
 
 	always @(posedge i_clk)
@@ -183,7 +181,7 @@ module sdram_ctrl
 
 				if (w_refr_req == 1'b1)
 					r_state <= STATE_REFRESH;
-				else if (r_fifo_nempty== 1'b1)
+				else if (i_fifo_nempty== 1'b1)
 				begin
 					r_state <= STATE_ACTIVATE;
 				end

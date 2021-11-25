@@ -60,6 +60,7 @@ module stream_cap
 					i_R;
 	assign w_G = (w_mux_mode == 3'd0) ? i_G :
 					(w_mux_mode == 3'd1) ? { i_G[0], i_G[0] & i_I, i_G[0], i_G[0] } :
+					(w_mux_mode == 3'd2) ? 4'b0 :
 					i_G;
 	assign w_B = (w_mux_mode == 3'd0) ? i_B :
 					(w_mux_mode == 3'd1) ? { i_B[0], i_B[0] & i_I, i_B[0], i_B[0] } :
@@ -80,7 +81,6 @@ module stream_cap
 		r_VS_prev <= r_VS;
 	end
 
-	//wire		w_HS_posedge = r_HS & (!r_HS_prev);
 	wire		w_HS_negedge = (!r_HS) & r_HS_prev;
 	wire		w_VS_negedge = (!r_VS) & r_VS_prev;
 
@@ -106,18 +106,34 @@ module stream_cap
 	wire	w_x_active = (r_x_cnt >= w_x_start) && (r_x_cnt <= (w_x_start + w_x_size));
 	wire	w_y_active = (r_y_cnt >= w_y_start) && (r_y_cnt <= (w_y_start + w_y_size));
 	wire	w_active = w_x_active & w_y_active;
+	
 
+	reg 	r_active;
 	reg	r_active_prev;
-	wire	w_active_negedge = (!w_active) && r_active_prev;
-	reg	r_active_negedge;
+	wire	w_active_negedge = (!r_active) && r_active_prev;
+	
+	reg[11:0] r_data_pipe0, r_data_pipe1;
 
 	always @(posedge i_pxl_clk)
 	begin
-		r_active_prev <= w_active;
+		r_active <= w_active;
+		r_active_prev <= r_active;
+		r_data_pipe0 <= { r_R, r_G, r_B };
+		r_data_pipe1 <= r_data_pipe0;
+	end
+
+	wire	r_active_negedge;
+	always @(posedge i_pxl_clk)
+	begin
 		r_active_negedge <= w_active_negedge;
 	end
 
-	//wire[(SCR_SIZE_BIT-1):0]	w_x_act = (r_x_cnt - w_x_start);
+	wire	r_active_negedge_fast;
+	always @(posedge i_ram_clk)
+	begin
+		r_active_negedge_fast <= r_active_negedge;
+	end
+
 	wire[(SCR_SIZE_BIT-1):0]	w_y_act = (r_y_cnt - w_y_start);
 	reg[(SCR_SIZE_BIT-1):0]		r_y_act;
 
@@ -126,11 +142,11 @@ module stream_cap
 		r_y_act <= w_y_act;
 	end
 
-	reg								r_wr_fifo_active;
+	reg r_wr_fifo_active;
 
 	always @(posedge i_ram_clk)
 	begin
-		if (r_active_negedge == 1'b1)
+		if (r_active_negedge_fast == 1'b1)
 			r_wr_fifo_active <= 1'b1;
 		else if (i_fifo_reset == 1'b1)
 			r_wr_fifo_active <= 1'b0;
@@ -138,11 +154,11 @@ module stream_cap
 
 	dcfifo wr_fifo
 	(
-		.data			({ r_R, r_G, r_B }),
+		.data			(r_data_pipe1),
 		.rdclk		(i_ram_clk),
 		.rdreq		(i_fifo_next),
 		.wrclk		(i_pxl_clk),
-		.wrreq		(w_active),
+		.wrreq		(r_active),
 		.q				(o_fifo_data),
 		.aclr			(),
 		.eccstatus	(),
@@ -166,8 +182,14 @@ module stream_cap
 		wr_fifo.use_eab = "ON",
 		wr_fifo.wrsync_delaypipe = 5;
 
+	reg[8:0] r_fifo_line;
+	always @(posedge i_ram_clk)
+	begin
+		r_fifo_line <= r_y_act[8:0];
+	end
+
 	assign o_fifo_active = r_wr_fifo_active;
-	assign o_fifo_line = r_y_act[8:0];
+	assign o_fifo_line = r_fifo_line;
 	assign o_x_size = w_x_size;
 	assign o_y_size = w_y_size;
 
