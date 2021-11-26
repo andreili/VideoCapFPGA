@@ -61,12 +61,21 @@ module video_uni
 		end
 		r_is_active <= w_is_active;
 	end
+	
+	/* add a data delay - SRAM have a delay a 2 cycles */
+	reg[4:0] r_active_pipe;
+	always @(posedge i_clk)
+	begin
+		r_active_pipe <= { r_active_pipe[3:0], r_is_active };
+	end
+
+	wire w_active = r_active_pipe[1];
 
 	assign o_line_idx = r_y[8:0];
 	assign o_column = r_x[8:0];
 
-	assign o_r = r_is_active ? { {2{i_vdata[11]}},  {2{i_vdata[10]}},  {2{i_vdata[9]}},  {2{i_vdata[8]}} } : 8'b0;
-	assign o_g = r_is_active ? { {2{i_vdata[7]}},   {2{i_vdata[6]}},   {2{i_vdata[5]}},  {2{i_vdata[4]}} } : 8'b0;
-	assign o_b = r_is_active ? { {2{i_vdata[3]}},   {2{i_vdata[2]}},   {2{i_vdata[1]}},  {2{i_vdata[0]}} } : 8'b0;
+	assign o_r = w_active ? { {2{i_vdata[11]}},  {2{i_vdata[10]}},  {2{i_vdata[9]}},  {2{i_vdata[8]}} } : 8'b0;
+	assign o_g = w_active ? { {2{i_vdata[7]}},   {2{i_vdata[6]}},   {2{i_vdata[5]}},  {2{i_vdata[4]}} } : 8'b0;
+	assign o_b = w_active ? { {2{i_vdata[3]}},   {2{i_vdata[2]}},   {2{i_vdata[1]}},  {2{i_vdata[0]}} } : 8'b0;
 
 endmodule
