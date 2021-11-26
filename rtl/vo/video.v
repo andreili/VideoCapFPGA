@@ -1,7 +1,6 @@
 module video
 (
 	input		wire			i_clk,
-	input		wire			i_clk_mem,
 	input		wire			i_reset_n,
 	// internal bus
 	input		wire			i_clk_bus,
@@ -14,8 +13,7 @@ module video
 	output	wire[8:0]	o_line_idx,
 	output	wire			o_line_end,
 	output	wire			o_frame_end,
-	input		wire			i_vdata_valid,
-	input		wire			i_vdata_reset,
+	output	wire[8:0]	o_column,
 	input		wire[11:0]	i_vdata,
 	// from v-cap
 	input		wire[11:0]	i_x_win_size,
@@ -29,19 +27,6 @@ module video
 	output	wire			o_de
 );
 
-	wire[8:0]	w_column;
-	wire[11:0]	w_vdata;
-
-	vmem u_vmem
-	(
-		.i_clk_mem		(i_clk_mem),
-		.i_clk_vo		(i_clk),
-		.i_vdata_valid	(i_vdata_valid),
-		.i_vdata_reset	(i_vdata_reset),
-		.i_vdata			(i_vdata),
-		.i_column		(w_column),
-		.o_vdata			(w_vdata)
-	);
 
 	wire[11:0]	w_h_active;
 	wire[11:0]	w_h_sync_start;
@@ -131,27 +116,20 @@ module video
 		.i_x				(w_x),
 		.i_y				(w_y),
 		.i_line_end		(w_h_line_end),
-		.i_vdata			(w_vdata),
+		.i_vdata			(i_vdata),
 		.o_line_idx		(w_line_idx),
-		.o_column		(w_column),
+		.o_column		(o_column),
 		.o_r				(o_r),
 		.o_g				(o_g),
 		.o_b				(o_b)
 	);
-	
-	reg[8:0] r_line_idx;
-	reg		r_line_end;
-	reg		r_frame_end;
-	always @(posedge i_clk_mem)
-	begin
-		r_line_idx <= w_line_idx;
-		r_line_end <= !w_h_is_active;
-		r_frame_end <= w_v_line_end;
-	end
 
-	assign o_line_idx = r_line_idx;
-	assign o_line_end = r_line_end;
-	assign o_frame_end = r_frame_end;
+	//assign o_line_idx = r_line_idx;
+	//assign o_line_end = r_line_end;
+	//assign o_frame_end = r_frame_end;
+	assign o_line_idx = w_line_idx;
+	assign o_line_end = !w_h_is_active;
+	assign o_frame_end = w_v_line_end;
 	assign o_de = w_h_is_active & w_v_is_active;
 
 endmodule

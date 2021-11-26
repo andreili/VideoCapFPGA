@@ -62,9 +62,6 @@ module video_uni
 		r_is_active <= w_is_active;
 	end
 
-
-
-
 	assign o_line_idx = r_y[8:0];
 	assign o_column = r_x[8:0];
 

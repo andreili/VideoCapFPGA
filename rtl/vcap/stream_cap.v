@@ -4,7 +4,6 @@ module stream_cap
 )
 (
 	input		wire						i_pxl_clk,
-	input		wire						i_ram_clk,
 	input		wire						i_reset_n,
 	// internal bus
 	input		wire						i_clk_bus,
@@ -20,11 +19,12 @@ module stream_cap
 	input		wire						i_I,
 	input		wire						i_HS,
 	input		wire						i_VS,
-	input		wire						i_fifo_next,
-	input		wire						i_fifo_reset,
-	output	wire						o_fifo_active,
-	output	wire[8:0]				o_fifo_line,
+	//
 	output	wire[11:0]				o_fifo_data,
+	output	wire						o_active,
+	output	wire						o_active_negedge,
+	output	wire[8:0]				o_line,
+	//
 	output	wire[SCR_SIZE_BIT:0]	o_x_size,
 	output	wire[SCR_SIZE_BIT:0]	o_y_size
 );
@@ -112,7 +112,7 @@ module stream_cap
 	reg	r_active_prev;
 	wire	w_active_negedge = (!r_active) && r_active_prev;
 	
-	reg[11:0] r_data_pipe0, r_data_pipe1;
+	reg[11:0] r_data_pipe0, r_data_pipe1, r_data_pipe2;
 
 	always @(posedge i_pxl_clk)
 	begin
@@ -120,18 +120,13 @@ module stream_cap
 		r_active_prev <= r_active;
 		r_data_pipe0 <= { r_R, r_G, r_B };
 		r_data_pipe1 <= r_data_pipe0;
+		r_data_pipe2 <= r_data_pipe1;
 	end
 
 	wire	r_active_negedge;
 	always @(posedge i_pxl_clk)
 	begin
 		r_active_negedge <= w_active_negedge;
-	end
-
-	wire	r_active_negedge_fast;
-	always @(posedge i_ram_clk)
-	begin
-		r_active_negedge_fast <= r_active_negedge;
 	end
 
 	wire[(SCR_SIZE_BIT-1):0]	w_y_act = (r_y_cnt - w_y_start);
@@ -142,55 +137,12 @@ module stream_cap
 		r_y_act <= w_y_act;
 	end
 
-	reg r_wr_fifo_active;
-
-	always @(posedge i_ram_clk)
-	begin
-		if (r_active_negedge_fast == 1'b1)
-			r_wr_fifo_active <= 1'b1;
-		else if (i_fifo_reset == 1'b1)
-			r_wr_fifo_active <= 1'b0;
-	end
-
-	dcfifo wr_fifo
-	(
-		.data			(r_data_pipe1),
-		.rdclk		(i_ram_clk),
-		.rdreq		(i_fifo_next),
-		.wrclk		(i_pxl_clk),
-		.wrreq		(r_active),
-		.q				(o_fifo_data),
-		.aclr			(),
-		.eccstatus	(),
-		.rdempty		(),
-		.rdfull		(),
-		.rdusedw		(),
-		.wrempty		(),
-		.wrfull		(),
-		.wrusedw		()
-	);
-	defparam
-		wr_fifo.intended_device_family = "Cyclone IV E",
-		wr_fifo.lpm_numwords = 512,
-		wr_fifo.lpm_showahead = "ON",
-		wr_fifo.lpm_type = "dcfifo",
-		wr_fifo.lpm_width = 12,
-		wr_fifo.lpm_widthu = 9,
-		wr_fifo.overflow_checking = "ON",
-		wr_fifo.rdsync_delaypipe = 5,
-		wr_fifo.underflow_checking = "ON",
-		wr_fifo.use_eab = "ON",
-		wr_fifo.wrsync_delaypipe = 5;
-
-	reg[8:0] r_fifo_line;
-	always @(posedge i_ram_clk)
-	begin
-		r_fifo_line <= r_y_act[8:0];
-	end
-
-	assign o_fifo_active = r_wr_fifo_active;
-	assign o_fifo_line = r_fifo_line;
 	assign o_x_size = w_x_size;
 	assign o_y_size = w_y_size;
+	
+	assign o_fifo_data = r_data_pipe2;
+	assign o_active = r_active;
+	assign o_active_negedge = r_active_negedge;
+	assign o_line = r_y_act[8:0];
 
 endmodule

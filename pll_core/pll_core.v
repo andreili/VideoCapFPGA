@@ -108,7 +108,7 @@ module pll_core (
 		altpll_component.bandwidth_type = "AUTO",
 		altpll_component.clk0_divide_by = 25,
 		altpll_component.clk0_duty_cycle = 50,
-		altpll_component.clk0_multiply_by = 133,
+		altpll_component.clk0_multiply_by = 114,
 		altpll_component.clk0_phase_shift = "0",
 		altpll_component.clk1_divide_by = 25,
 		altpll_component.clk1_duty_cycle = 50,
@@ -116,8 +116,8 @@ module pll_core (
 		altpll_component.clk1_phase_shift = "0",
 		altpll_component.clk2_divide_by = 25,
 		altpll_component.clk2_duty_cycle = 50,
-		altpll_component.clk2_multiply_by = 133,
-		altpll_component.clk2_phase_shift = "1880",
+		altpll_component.clk2_multiply_by = 114,
+		altpll_component.clk2_phase_shift = "2193",
 		altpll_component.clk3_divide_by = 25,
 		altpll_component.clk3_duty_cycle = 50,
 		altpll_component.clk3_multiply_by = 38,
@@ -203,9 +203,9 @@ endmodule
 // Retrieval info: PRIVATE: DUTY_CYCLE1 STRING "50.00000000"
 // Retrieval info: PRIVATE: DUTY_CYCLE2 STRING "50.00000000"
 // Retrieval info: PRIVATE: DUTY_CYCLE3 STRING "50.00000000"
-// Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE0 STRING "133.000000"
+// Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE0 STRING "114.000000"
 // Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE1 STRING "1.000000"
-// Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE2 STRING "133.000000"
+// Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE2 STRING "114.000000"
 // Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE3 STRING "38.000000"
 // Retrieval info: PRIVATE: EXPLICIT_SWITCHOVER_COUNTER STRING "0"
 // Retrieval info: PRIVATE: EXT_FEEDBACK_RADIO STRING "0"
@@ -240,9 +240,9 @@ endmodule
 // Retrieval info: PRIVATE: MULT_FACTOR2 NUMERIC "1"
 // Retrieval info: PRIVATE: MULT_FACTOR3 NUMERIC "1"
 // Retrieval info: PRIVATE: NORMAL_MODE_RADIO STRING "1"
-// Retrieval info: PRIVATE: OUTPUT_FREQ0 STRING "133.00000000"
+// Retrieval info: PRIVATE: OUTPUT_FREQ0 STRING "114.00000000"
 // Retrieval info: PRIVATE: OUTPUT_FREQ1 STRING "1.00000000"
-// Retrieval info: PRIVATE: OUTPUT_FREQ2 STRING "133.00000000"
+// Retrieval info: PRIVATE: OUTPUT_FREQ2 STRING "114.00000000"
 // Retrieval info: PRIVATE: OUTPUT_FREQ3 STRING "38.00000000"
 // Retrieval info: PRIVATE: OUTPUT_FREQ_MODE0 STRING "1"
 // Retrieval info: PRIVATE: OUTPUT_FREQ_MODE1 STRING "1"
@@ -305,7 +305,7 @@ endmodule
 // Retrieval info: CONSTANT: BANDWIDTH_TYPE STRING "AUTO"
 // Retrieval info: CONSTANT: CLK0_DIVIDE_BY NUMERIC "25"
 // Retrieval info: CONSTANT: CLK0_DUTY_CYCLE NUMERIC "50"
-// Retrieval info: CONSTANT: CLK0_MULTIPLY_BY NUMERIC "133"
+// Retrieval info: CONSTANT: CLK0_MULTIPLY_BY NUMERIC "114"
 // Retrieval info: CONSTANT: CLK0_PHASE_SHIFT STRING "0"
 // Retrieval info: CONSTANT: CLK1_DIVIDE_BY NUMERIC "25"
 // Retrieval info: CONSTANT: CLK1_DUTY_CYCLE NUMERIC "50"
@@ -313,8 +313,8 @@ endmodule
 // Retrieval info: CONSTANT: CLK1_PHASE_SHIFT STRING "0"
 // Retrieval info: CONSTANT: CLK2_DIVIDE_BY NUMERIC "25"
 // Retrieval info: CONSTANT: CLK2_DUTY_CYCLE NUMERIC "50"
-// Retrieval info: CONSTANT: CLK2_MULTIPLY_BY NUMERIC "133"
-// Retrieval info: CONSTANT: CLK2_PHASE_SHIFT STRING "1880"
+// Retrieval info: CONSTANT: CLK2_MULTIPLY_BY NUMERIC "114"
+// Retrieval info: CONSTANT: CLK2_PHASE_SHIFT STRING "2193"
 // Retrieval info: CONSTANT: CLK3_DIVIDE_BY NUMERIC "25"
 // Retrieval info: CONSTANT: CLK3_DUTY_CYCLE NUMERIC "50"
 // Retrieval info: CONSTANT: CLK3_MULTIPLY_BY NUMERIC "38"
